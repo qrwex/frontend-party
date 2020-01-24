@@ -2,7 +2,7 @@ import {
   Table, TableBody, TableCell, TableHead, TableRow,
 } from '@material-ui/core';
 import React from 'react';
-import { Servers } from 'store/modules/servers/types';
+import { Servers } from 'shared/types/servers';
 
 type Props = {
   servers: Servers;

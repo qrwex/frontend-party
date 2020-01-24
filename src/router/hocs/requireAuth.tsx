@@ -1,44 +1,32 @@
-import * as React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { initTokenStorage } from 'store/modules/authentication/actions';
 import { getStoredAuthToken } from 'store/modules/authentication/helpers';
 import PATHS from 'shared/constants/PATHS';
-import { LocationState } from 'history';
 
-const requireAuth = (WrappedComponent: React.ComponentType): React.ComponentType => {
-  type Props = {
+const requireAuth = (WrappedComponent: React.ComponentType<RouteComponentProps>) => {
+  type Props = RouteComponentProps & {
     isAuthenticated: boolean;
-    history: LocationState;
-    initTokenStorage: (payload: {token: string}) => void;
+    initTokenStorage: typeof initTokenStorage;
   }
 
-  class RequireAuth extends React.Component<Props> {
-    componentDidMount() {
-      this.handleAuthentication();
-    }
+  const RequireAuth = (props: Props) => {
+    const { isAuthenticated, initTokenStorage: initStorage, ...routeProps } = props;
 
-    componentDidUpdate() {
-      this.handleAuthentication();
-    }
-
-    handleAuthentication() {
-      const { isAuthenticated, history, initTokenStorage: initStorage } = this.props;
+    useEffect(() => {
       if (!isAuthenticated) {
         const token = getStoredAuthToken();
         if (!token) {
-          history.push(PATHS.HOME);
+          routeProps.history.push(PATHS.HOME);
           return;
         }
         initStorage({ token });
       }
-    }
+    });
 
-    render() {
-      const { isAuthenticated, ...restProps } = this.props;
-      return isAuthenticated ? <WrappedComponent {...restProps} /> : null;
-    }
-  }
+    return isAuthenticated ? <WrappedComponent {...routeProps} /> : null;
+  };
 
   const mapStateToProps = (state: any) => ({
     isAuthenticated: !!state.authentication.token,

@@ -1,4 +1,5 @@
 import { createMuiTheme } from '@material-ui/core';
+import { ThemeOptions } from '@material-ui/core/styles/createMuiTheme';
 
 const defaultTheme = {
   palette: {
@@ -26,7 +27,6 @@ const defaultTheme = {
       },
     },
   },
-};
+} as ThemeOptions;
 
-// @ts-ignore
 export default createMuiTheme(defaultTheme);

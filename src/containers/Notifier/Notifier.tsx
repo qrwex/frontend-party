@@ -1,28 +1,30 @@
 import React from 'react';
 import { makeStyles, Theme } from '@material-ui/core/styles';
-import Snackbar from '@material-ui/core/Snackbar';
+import Snackbar, { SnackbarProps } from '@material-ui/core/Snackbar';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
-import { connect } from 'react-redux';
+import { connect, MapDispatchToPropsParam, MapStateToPropsParam } from 'react-redux';
 import { clearMessage } from 'store/modules/notification/actions';
+import { State } from 'store';
+import { Message } from 'store/modules/notification/types';
 
-const useStyle = makeStyles((theme: Theme) => ({
+const useStyles = makeStyles((theme: Theme) => ({
   close: {
     padding: theme.spacing(0.5),
   },
 }));
 
 type Props = {
-  message: string | null;
-  onClose: () => void;
+  message: Message | null;
+  onClose: typeof clearMessage;
 }
 
 const Notifier = (props: Props) => {
   const { message, onClose } = props;
 
-  const classes = useStyle();
+  const classes = useStyles();
 
-  const handleClose = (event: any, reason: string) => {
+  const handleClose: SnackbarProps['onClose'] = (event, reason) => {
     if (reason === 'clickaway') {
       return;
     }
@@ -44,16 +46,19 @@ const Notifier = (props: Props) => {
           'aria-describedby': 'message-id',
         }}
         message={(
-          <span id="message-id">{message}</span>
+          <span id="message-id">
+            {message}
+          </span>
         )}
         action={[
-          // @ts-ignore
           <IconButton
             key="close"
             aria-label="close"
             color="inherit"
             className={classes.close}
-            onClick={handleClose}
+            onClick={(event) => {
+              handleClose(event, 'close');
+            }}
           >
             <CloseIcon />
           </IconButton>,
@@ -63,11 +68,16 @@ const Notifier = (props: Props) => {
   );
 };
 
-const mapStateToProps = (state: any) => ({
+type TStateProps = Pick<Props, 'message'>;
+type TDispatchProps = Pick<Props, 'onClose'>;
+type TInnerProps = TStateProps & TDispatchProps;
+type TOwnProps = Omit<Props, keyof TInnerProps>;
+
+const mapStateToProps: MapStateToPropsParam<TStateProps, TOwnProps, State> = (state) => ({
   message: state.notification.message,
 });
 
-const mapDispatchToProps = ({
+const mapDispatchToProps: MapDispatchToPropsParam<TDispatchProps, TOwnProps> = ({
   onClose: clearMessage,
 });
 

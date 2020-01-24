@@ -2,22 +2,23 @@ import React, { useEffect } from 'react';
 import {
   Grid, makeStyles, Theme, Typography,
 } from '@material-ui/core';
-import { connect } from 'react-redux';
+import { connect, MapDispatchToPropsParam, MapStateToPropsParam } from 'react-redux';
 import { getAll } from 'store/modules/servers/actions';
 import * as SERVERS_ACTION_TYPES from 'store/modules/servers/constants';
 import { createLoadingSelector } from 'store/modules/loading/selectors';
 import FullScreenSpinner from 'components/FullScreenSpinner/FullScreenSpinner';
 import ServersTable from 'components/ServersTable/ServersTable';
-import { Servers as ServersType } from 'store/modules/servers/types';
 import Header from 'containers/Header/Header';
+import { Servers as $Servers } from '../../shared/types/servers';
+import { State } from '../../store';
 
 type Props = {
-  getServers: () => void;
-  servers: ServersType;
+  getServers: typeof getAll;
+  servers: $Servers | null;
   isLoading: boolean;
 }
 
-const useStyle = makeStyles((theme: Theme) => ({
+const useStyles = makeStyles((theme: Theme) => ({
   root: {
     padding: theme.spacing(3),
   },
@@ -25,7 +26,7 @@ const useStyle = makeStyles((theme: Theme) => ({
 
 const Servers = (props: Props) => {
   const { getServers, servers, isLoading } = props;
-  const classes = useStyle();
+  const classes = useStyles();
 
   useEffect(() => {
     if (!servers) {
@@ -55,12 +56,17 @@ const loadingSelector = createLoadingSelector([
   SERVERS_ACTION_TYPES.GET_ALL_REQUEST,
 ]);
 
-const mapStateToProps = (state: any) => ({
+type TStateProps = Pick<Props, 'servers' | 'isLoading'>;
+type TDispatchProps = Pick<Props, 'getServers'>;
+type TInnerProps = TStateProps & TDispatchProps;
+type TOwnProps = Omit<Props, keyof TInnerProps>;
+
+const mapStateToProps: MapStateToPropsParam<TStateProps, TOwnProps, State> = (state) => ({
   servers: state.servers.all,
   isLoading: loadingSelector(state),
 });
 
-const mapDispatchToProps = ({
+const mapDispatchToProps: MapDispatchToPropsParam<TDispatchProps, TOwnProps> = ({
   getServers: getAll,
 });
 

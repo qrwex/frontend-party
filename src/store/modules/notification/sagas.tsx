@@ -1,8 +1,8 @@
 import { fork, put, take } from 'redux-saga/effects';
-import * as ROUTER_ACTION_TYPES from './constants';
-import * as notificationActions from '../notification/actions';
+import * as ROUTER_ACTION_TYPES from '../router/constants';
+import * as notificationActions from './actions';
 
-function* locationChange() {
+function* clear() {
   while (true) {
     yield take(ROUTER_ACTION_TYPES.LOCATION_CHANGE);
     yield put(notificationActions.clearMessage());
@@ -10,7 +10,7 @@ function* locationChange() {
 }
 
 const notificationSagas = [
-  fork(locationChange),
+  fork(clear),
 ];
 
 export default notificationSagas;

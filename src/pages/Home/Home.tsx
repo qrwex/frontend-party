@@ -1,10 +1,10 @@
 import React from 'react';
 import LoginForm from 'containers/LoginForm/LoginForm';
 import { Grid, makeStyles, Theme } from '@material-ui/core';
-import background from 'assets/img/home-background.svg';
+import background from 'assets/img/home-background.png';
 import logo from 'assets/img/logo.svg';
 
-const useStyle = makeStyles((theme: Theme) => ({
+const useStyles = makeStyles((theme: Theme) => ({
   root: {
     height: '100vh',
     minHeight: 'max-content',
@@ -20,7 +20,7 @@ const useStyle = makeStyles((theme: Theme) => ({
 }));
 
 const Home = () => {
-  const classes = useStyle();
+  const classes = useStyles();
   return (
     <div className={classes.root}>
       <Grid spacing={3} container direction="column" justify="center" alignItems="center">

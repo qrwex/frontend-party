@@ -1,6 +1,12 @@
-export const DEFAULT_STATE = {};
+import { Action } from 'redux-actions';
 
-const loading = (state: any = DEFAULT_STATE, action: any) => {
+type State = {
+  [k: string]: boolean;
+};
+
+export const DEFAULT_STATE: State = {};
+
+const loading = (state: State = DEFAULT_STATE, action: Action<any>) => {
   const { type } = action;
   const matches = /(.*)_(REQUEST|SUCCESS|FAILURE)/.exec(type);
   // not a *_REQUEST / *_SUCCESS /  *_FAILURE actions - ignore

@@ -1,6 +1,7 @@
 /* eslint-disable import/prefer-default-export */
+import { State } from 'store';
 
-export const createLoadingSelector = (actions: [any]) => (state: any) => {
+export const createLoadingSelector = (actions: string[]) => (state: State) => {
   const strippedActions = actions.map((action) => {
     const matches = /(.*)_(REQUEST)/.exec(action);
     if (!matches) {

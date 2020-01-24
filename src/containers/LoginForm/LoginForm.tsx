@@ -2,14 +2,17 @@ import React from 'react';
 import {
   Button, CircularProgress, Grid, InputAdornment, makeStyles,
 } from '@material-ui/core';
-import { Form, Formik, FormikValues } from 'formik';
-import { object, string } from 'yup';
+import {
+  Form, Formik, FormikProps,
+} from 'formik';
+import { InferType, object, string } from 'yup';
 import { Lock, Person } from '@material-ui/icons';
-import { connect } from 'react-redux';
+import { connect, MapDispatchToPropsParam, MapStateToPropsParam } from 'react-redux';
 import FormTextField from 'components/FormTextField/FormTextField';
 import { init } from 'store/modules/authentication/actions';
 import { createLoadingSelector } from 'store/modules/loading/selectors';
 import * as AUTHENTICATION_ACTION_TYPES from 'store/modules/authentication/constants';
+import { State } from 'store';
 import { FIELD_LABELS, FIELDS, INITIAL_VALUES } from './constants';
 
 const validationSchema = object()
@@ -20,24 +23,24 @@ const validationSchema = object()
       .required('Enter a password'),
   });
 
-const useStyle = makeStyles(({
+export type FormShape = InferType<typeof validationSchema>
+
+const useStyles = makeStyles(({
   root: {
     maxWidth: 360,
   },
 }));
 
 type Props = {
-  authorize: (payload: {
-    username: string, password: string
-  }) => void;
+  authorize: typeof init;
   isLoading: boolean;
 }
 
 const LoginForm = (props: Props) => {
-  const classes = useStyle();
+  const classes = useStyles();
   const { authorize, isLoading } = props;
 
-  const handleSubmit = async (values: FormikValues) => {
+  const handleSubmit = async (values: FormShape) => {
     const { [FIELDS.USERNAME]: username, [FIELDS.PASSWORD]: password } = values;
     authorize({
       username, password,
@@ -51,7 +54,7 @@ const LoginForm = (props: Props) => {
       onSubmit={handleSubmit}
     >
       {
-        (formikProps) => (
+        (formikProps: FormikProps<FormShape>) => (
           <Form className={classes.root}>
             <Grid container spacing={3}>
               <Grid item xs={12}>
@@ -70,6 +73,7 @@ const LoginForm = (props: Props) => {
               <Grid item xs={12}>
                 <FormTextField
                   name={FIELDS.PASSWORD}
+                  type="password"
                   label={FIELD_LABELS[FIELDS.PASSWORD]}
                   InputProps={{
                     startAdornment: (
@@ -101,11 +105,16 @@ const loadingSelector = createLoadingSelector([
   AUTHENTICATION_ACTION_TYPES.AUTH_REQUEST,
 ]);
 
-const mapStateToProps = (state: any) => ({
+type TStateProps = Pick<Props, 'isLoading'>;
+type TDispatchProps = Pick<Props, 'authorize'>;
+type TInnerProps = TStateProps & TDispatchProps;
+type TOwnProps = Omit<Props, keyof TInnerProps>;
+
+const mapStateToProps: MapStateToPropsParam<TStateProps, TOwnProps, State> = (state) => ({
   isLoading: loadingSelector(state),
 });
 
-const mapDispatchToProps = ({
+const mapDispatchToProps: MapDispatchToPropsParam<TDispatchProps, TOwnProps> = ({
   authorize: init,
 });
 

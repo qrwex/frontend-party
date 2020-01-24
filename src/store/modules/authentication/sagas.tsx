@@ -2,21 +2,31 @@ import {
   call, fork, put, take,
 } from 'redux-saga/effects';
 import api from 'api';
-import { push } from 'connected-react-router';
+import { LocationChangeAction, push } from 'connected-react-router';
 import PATHS from 'shared/constants/PATHS';
 import { reset as resetAppState } from 'store/rootReducer/actions';
 import * as AUTHENTICATION_ACTION_TYPES from 'store/modules/authentication/constants';
 import * as helpers from './helpers';
 import * as actions from './actions';
 import * as notificationActions from '../notification/actions';
+import { InferApiResult } from '../../types';
+import * as ROUTER_ACTION_TYPES from '../router/constants';
+
+type Authorize = InferApiResult<typeof api.user.authorize>;
+type Init = ReturnType<typeof actions.init>;
+type InitTokenStorage = ReturnType<typeof actions.initTokenStorage>;
 
 function* authorize() {
   while (true) {
-    const { payload: { username, password } } = yield take(AUTHENTICATION_ACTION_TYPES.INIT);
+    const {
+      payload: {
+        username, password,
+      },
+    }: Init = yield take(AUTHENTICATION_ACTION_TYPES.INIT);
     yield put(actions.authRequest());
-    const { response, error } = yield call(api.user.authorize, username, password);
-    if (!error) {
-      const { token } = response;
+    const result: Authorize = yield call(api.user.authorize, username, password);
+    if (!result.error) {
+      const { token } = result.response;
       yield put(actions.initTokenStorage({ token }));
       yield put(actions.authSuccess());
     } else {
@@ -51,9 +61,25 @@ function* logout() {
 
 function* setToken() {
   while (true) {
-    const { payload: { token } } = yield take(AUTHENTICATION_ACTION_TYPES.INIT_TOKEN_STORAGE);
+    const {
+      payload: { token },
+    }: InitTokenStorage = yield take(AUTHENTICATION_ACTION_TYPES.INIT_TOKEN_STORAGE);
     yield call(helpers.setAuthTokenToLocalStorage, token);
     yield put(actions.setToken({ token }));
+  }
+}
+
+function* omitAuthScreen() {
+  while (true) {
+    const {
+      payload: { location },
+    }: LocationChangeAction = yield take(ROUTER_ACTION_TYPES.LOCATION_CHANGE);
+    if (location.pathname === PATHS.HOME) {
+      const token = helpers.getStoredAuthToken();
+      if (token) {
+        yield put(push(PATHS.SERVERS));
+      }
+    }
   }
 }
 
@@ -63,6 +89,7 @@ const authenticationSagas = [
   fork(authorizeFailure),
   fork(setToken),
   fork(logout),
+  fork(omitAuthScreen),
 ];
 
 export default authenticationSagas;

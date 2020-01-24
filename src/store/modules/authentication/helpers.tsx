@@ -1,5 +1,5 @@
 import LOCAL_STORAGE_KEYS from 'shared/constants/LOCAL_STORAGE_KEYS';
-import { Token } from './types';
+import { Token } from 'shared/types/user';
 
 export const getStoredAuthToken = () => localStorage.getItem(LOCAL_STORAGE_KEYS.TOKEN);
 

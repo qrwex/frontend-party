@@ -1,15 +1,21 @@
 import { handleActions } from 'redux-actions';
 import * as NOTIFICATION_ACTION_TYPES from './constants';
+import { Message } from './types';
 
-type DefaultState = {
-  message: null
+type State = {
+  readonly message: null | Message
 }
 
-export const DEFAULT_STATE: DefaultState = {
+type Payload = {
+  message: Message;
+}
+
+export const DEFAULT_STATE: State = {
   message: null,
 };
 
-const reducer = handleActions({
+
+const reducer = handleActions<State, Payload>({
   [NOTIFICATION_ACTION_TYPES.SET_MESSAGE]: (state, { payload: { message } }) => (
     { ...state, message }
   ),

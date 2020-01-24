@@ -1,8 +1,11 @@
 import { TextField } from '@material-ui/core';
-import { useField } from 'formik';
+import { FieldAttributes, useField } from 'formik';
 import React from 'react';
+import { TextFieldProps } from '@material-ui/core/TextField/TextField';
 
-const FormTextField = (props: any) => {
+type FormTextFieldProps = TextFieldProps & FieldAttributes<{}>
+
+const FormTextField = (props: FormTextFieldProps) => {
   const [field, meta] = useField(props);
   return (
     <TextField {...field} {...props} error={meta.touched && !!meta.error} />

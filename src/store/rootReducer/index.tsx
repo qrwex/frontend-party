@@ -8,12 +8,14 @@ import { LocationState } from 'history';
 import * as ROOT_REDUCER_ACTION_TYPES from './constants';
 
 const appReducer = (history: LocationState) => combineReducers({
-  router: connectRouter(history),
   authentication,
-  notification,
-  servers,
   loading,
+  notification,
+  router: connectRouter(history),
+  servers,
 });
+
+export type State = Parameters<ReturnType<typeof appReducer>>[0];
 
 const rootReducer = (history: LocationState) => (state: any, action: any) => {
   if (action.type === ROOT_REDUCER_ACTION_TYPES.RESET_STATE) {

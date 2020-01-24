@@ -1,15 +1,20 @@
 import { handleActions } from 'redux-actions';
+import { Token } from 'shared/types/user';
 import * as AUTHENTICATION_ACTION_TYPES from './constants';
 
-type DefaultState = {
-  token: null
+type State = {
+  readonly token: Token | null
 }
 
-export const DEFAULT_STATE: DefaultState = {
+type Payload = {
+  token: string;
+}
+
+export const DEFAULT_STATE: State = {
   token: null,
 };
 
-const reducer = handleActions({
+const reducer = handleActions<State, Payload>({
   [AUTHENTICATION_ACTION_TYPES.SET_TOKEN]: (state, { payload: { token } }) => ({
     ...state,
     token,

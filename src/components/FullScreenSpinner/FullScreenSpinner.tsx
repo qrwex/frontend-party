@@ -7,7 +7,7 @@ type Props = {
   message?: string
 }
 
-const useStyle = makeStyles((theme: Theme) => ({
+const useStyles = makeStyles((theme: Theme) => ({
   root: {
     height: '100vh',
     minHeight: 'max-content',
@@ -17,7 +17,7 @@ const useStyle = makeStyles((theme: Theme) => ({
 }));
 
 const FullScreenSpinner = ({ message }: Props) => {
-  const classes = useStyle();
+  const classes = useStyles();
 
   return (
     <div className={classes.root}>

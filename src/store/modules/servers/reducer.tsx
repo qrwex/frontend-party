@@ -1,15 +1,20 @@
 import { handleActions } from 'redux-actions';
+import { Servers } from 'shared/types/servers';
 import * as SERVERS_ACTION_TYPES from './constants';
 
-type DefaultState = {
-  all: null
+type State = {
+  readonly all: Servers | null
 }
 
-export const DEFAULT_STATE: DefaultState = {
+type Payload = {
+  all: Servers
+}
+
+export const DEFAULT_STATE: State = {
   all: null,
 };
 
-const reducer = handleActions({
+const reducer = handleActions<State, Payload>({
   [SERVERS_ACTION_TYPES.SET_ALL]: (state, { payload: { all } }) => (
     { ...state, all }
   ),
