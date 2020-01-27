@@ -4,8 +4,6 @@ import {
 } from '@material-ui/core';
 import { connect, MapDispatchToPropsParam, MapStateToPropsParam } from 'react-redux';
 import { getAll } from 'store/modules/servers/actions';
-import * as SERVERS_ACTION_TYPES from 'store/modules/servers/constants';
-import { createLoadingSelector } from 'store/modules/loading/selectors';
 import FullScreenSpinner from 'components/FullScreenSpinner/FullScreenSpinner';
 import ServersTable from 'components/ServersTable/ServersTable';
 import Header from 'containers/Header/Header';
@@ -52,10 +50,6 @@ const Servers = (props: Props) => {
   );
 };
 
-const loadingSelector = createLoadingSelector([
-  SERVERS_ACTION_TYPES.GET_ALL_REQUEST,
-]);
-
 type TStateProps = Pick<Props, 'servers' | 'isLoading'>;
 type TDispatchProps = Pick<Props, 'getServers'>;
 type TInnerProps = TStateProps & TDispatchProps;
@@ -63,7 +57,7 @@ type TOwnProps = Omit<Props, keyof TInnerProps>;
 
 const mapStateToProps: MapStateToPropsParam<TStateProps, TOwnProps, State> = (state) => ({
   servers: state.servers.all,
-  isLoading: loadingSelector(state),
+  isLoading: state.servers.loading,
 });
 
 const mapDispatchToProps: MapDispatchToPropsParam<TDispatchProps, TOwnProps> = ({

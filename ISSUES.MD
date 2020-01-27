@@ -1,4 +1,4 @@
-- ~~Background image could be .jpg instead of .svg this way you would avoid 5MB image being loaded for your user~~;
+- ~~Background image could be .jpg instead of .svg this way you would avoid 5MB image being loaded for your user;~~
 - Readme missing, except for the default create-react-app;
 - ~~Login page does not handle redirection if user is already authenticated;~~
 - ~~Password field has type of "text", instead of "password". This is a great security issue;~~
@@ -10,6 +10,6 @@
 - ~~We've missed react built-in hooks usage. Only "useEffect" was used once, while it could have been used in router HOC as well(instead of lifecycle methods), and few other places in the app;~~
 - ~~Class components were used where functional could have taken place.~~
 - ~~No handling of "Unauthorized" requests for servers endpoint, it just keeps requesting to infinity. Imagine user with bad or expired token;~~
-- `/(.*)_(REQUEST|SUCCESS|FAILURE)/.exec(type)` is not a reliable/clean way to check if request is happening;
+- ~~Current loading implementation is not a reliable/clean way to check if request is happening;~~
 - Missing sorted servers implementation;
 - Visual implementation is really far from provided design. It is okay to use libraries like material ui, but those should be supporting design, not overwriting it;

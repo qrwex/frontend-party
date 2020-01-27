@@ -33,6 +33,15 @@ module.exports = {
       "rules": {
         "no-unused-vars": [0]
       }
+    },
+    {
+      "files": [
+        "**/{api,constants,helpers}/*.{ts,tsx}",
+        "**/{constants,actions,}.{ts,tsx}"
+      ],
+      "rules": {
+        "import/prefer-default-export": [0]
+      }
     }
   ],
   settings: {

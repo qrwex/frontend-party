@@ -1,9 +1,11 @@
 import { handleActions } from 'redux-actions';
 import { Token } from 'shared/types/user';
+import { setLoading } from 'store/helpers';
 import * as AUTHENTICATION_ACTION_TYPES from './constants';
 
 type State = {
-  readonly token: Token | null
+  readonly token: Token | null;
+  readonly loading: boolean;
 }
 
 type Payload = {
@@ -12,6 +14,7 @@ type Payload = {
 
 export const DEFAULT_STATE: State = {
   token: null,
+  loading: false,
 };
 
 const reducer = handleActions<State, Payload>({
@@ -19,6 +22,9 @@ const reducer = handleActions<State, Payload>({
     ...state,
     token,
   }),
+  [AUTHENTICATION_ACTION_TYPES.AUTH_REQUEST]: (state) => setLoading(state, true),
+  [AUTHENTICATION_ACTION_TYPES.AUTH_FAILURE]: (state) => setLoading(state, false),
+  [AUTHENTICATION_ACTION_TYPES.AUTH_SUCCESS]: (state) => setLoading(state, false),
 },
 DEFAULT_STATE);
 

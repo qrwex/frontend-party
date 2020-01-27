@@ -10,8 +10,6 @@ import { Lock, Person } from '@material-ui/icons';
 import { connect, MapDispatchToPropsParam, MapStateToPropsParam } from 'react-redux';
 import FormTextField from 'components/FormTextField/FormTextField';
 import { init } from 'store/modules/authentication/actions';
-import { createLoadingSelector } from 'store/modules/loading/selectors';
-import * as AUTHENTICATION_ACTION_TYPES from 'store/modules/authentication/constants';
 import { State } from 'store';
 import { FIELD_LABELS, FIELDS, INITIAL_VALUES } from './constants';
 
@@ -100,18 +98,13 @@ const LoginForm = (props: Props) => {
     </Formik>
   );
 };
-
-const loadingSelector = createLoadingSelector([
-  AUTHENTICATION_ACTION_TYPES.AUTH_REQUEST,
-]);
-
 type TStateProps = Pick<Props, 'isLoading'>;
 type TDispatchProps = Pick<Props, 'authorize'>;
 type TInnerProps = TStateProps & TDispatchProps;
 type TOwnProps = Omit<Props, keyof TInnerProps>;
 
 const mapStateToProps: MapStateToPropsParam<TStateProps, TOwnProps, State> = (state) => ({
-  isLoading: loadingSelector(state),
+  isLoading: state.authentication.loading,
 });
 
 const mapDispatchToProps: MapDispatchToPropsParam<TDispatchProps, TOwnProps> = ({
