@@ -1,6 +1,6 @@
 import { AxiosRequestConfig, AxiosResponse, AxiosInterceptorManager } from 'axios';
-import HTTP_CODES from 'shared/constants/HTTP_CODES';
-import { initLogout } from 'store/modules/authentication/actions';
+import { HttpCodes } from 'shared/constants';
+import { logout } from 'store/modules/authentication/actions';
 import store from 'store';
 import { MappedSuccessResponse } from '../types';
 
@@ -14,9 +14,9 @@ export const mapApiResponse: OnFulfilled<AxiosResponse> = (response: AxiosRespon
 export const mapApiError: OnRejected<AxiosResponse> = (error) => {
   const { response: { status, statusText, data: { message = '' } = {} } } = error;
 
-  if (status === HTTP_CODES.UNAUTHORIZED) {
+  if (status === HttpCodes.Unauthorized) {
     store.dispatch(
-      initLogout(),
+      logout(),
     );
   }
 

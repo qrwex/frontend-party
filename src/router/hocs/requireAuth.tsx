@@ -1,27 +1,30 @@
 import React, { useEffect } from 'react';
-import { connect } from 'react-redux';
+import { connect, MapDispatchToPropsParam } from 'react-redux';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-import { initTokenStorage } from 'store/modules/authentication/actions';
+import * as authActions from 'store/modules/authentication/actions';
 import { getStoredAuthToken } from 'store/modules/authentication/helpers';
-import PATHS from 'shared/constants/PATHS';
+import { Paths } from 'shared/constants';
+import { bindActionCreators } from 'redux';
 
 const requireAuth = (WrappedComponent: React.ComponentType<RouteComponentProps>) => {
   type Props = RouteComponentProps & {
     isAuthenticated: boolean;
-    initTokenStorage: typeof initTokenStorage;
+    actions: {
+      auth: typeof authActions;
+    };
   }
 
   const RequireAuth = (props: Props) => {
-    const { isAuthenticated, initTokenStorage: initStorage, ...routeProps } = props;
+    const { isAuthenticated, actions, ...routeProps } = props;
 
     useEffect(() => {
       if (!isAuthenticated) {
         const token = getStoredAuthToken();
         if (!token) {
-          routeProps.history.push(PATHS.HOME);
+          routeProps.history.push(Paths.Home);
           return;
         }
-        initStorage({ token });
+        actions.auth.initTokenStorage({ token });
       }
     });
 
@@ -32,9 +35,16 @@ const requireAuth = (WrappedComponent: React.ComponentType<RouteComponentProps>)
     isAuthenticated: !!state.authentication.token,
   });
 
-  const mapDispatchToProps = {
-    initTokenStorage,
-  };
+  type TStateProps = Pick<Props, 'isAuthenticated'>;
+  type TDispatchProps = Pick<Props, 'actions'>;
+  type TInnerProps = TStateProps & TDispatchProps;
+  type TOwnProps = Omit<Props, keyof TInnerProps>;
+
+  const mapDispatchToProps: MapDispatchToPropsParam<TDispatchProps, TOwnProps> = (dispatch) => ({
+    actions: {
+      auth: bindActionCreators(authActions, dispatch),
+    },
+  });
 
   return withRouter(connect(mapStateToProps, mapDispatchToProps)(RequireAuth));
 };

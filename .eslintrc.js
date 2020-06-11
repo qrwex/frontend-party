@@ -37,7 +37,7 @@ module.exports = {
     {
       "files": [
         "**/{api,constants,helpers}/*.{ts,tsx}",
-        "**/{constants,actions,}.{ts,tsx}"
+        "**/{constants,actions,index}.{ts,tsx}"
       ],
       "rules": {
         "import/prefer-default-export": [0]

@@ -1,7 +1,0 @@
-import FIELDS from './FIELDS';
-import FIELD_LABELS from './FIELD_LABELS';
-import INITIAL_VALUES from './INITIAL_VALUES';
-
-export {
-  FIELDS, FIELD_LABELS, INITIAL_VALUES,
-};
